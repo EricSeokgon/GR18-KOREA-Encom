@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    
+    <settings>
+		<setting name="callSettersOnNulls" value="true"/>
+		<!--for oracle null 처리 출처: http://yamea-guide.tistory.com/161  -->
+		<setting name="cacheEnabled" value="false" />
+        <setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+		
+    
+
+
+ 
+   
+
+
+</configuration>
+

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpwb/analytics">
+       
+    <update id="insertLocation"  parameterType="hashMap" >		
+		INSERT INTO bpw.bpw_location_analytics  (
+    				input_dt
+    				,apMac
+    				,apTags
+    				,clientMac
+    				,rssi
+    				,lat
+    				,lng
+    				,ssid
+    	)
+		(SELECT DATE_FORMAT(objectid_dt ,'%Y-%m-%d %H:%i') as date
+				,apMac 
+		        ,apTags 
+		        ,clientMac 
+		        ,rssi 
+		        ,lat 
+		        ,lng 
+		        ,ssid
+		   FROM bpw.bpw_location_client
+		  WHERE ssid is null and rssi >= 20 and run_flag is null and DATE_FORMAT(objectid_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY)))
+			 	UNION ALL
+		(SELECT DATE_FORMAT(objectid_dt ,'%Y-%m-%d %H:%i') as date 
+		        ,apMac
+		        ,apTags
+		        ,clientMac
+		        ,rssi
+		        ,lat
+		        ,lng
+		        ,ssid
+		   FROM bpw.bpw_location_client
+		   WHERE ssid is not null and run_flag is null and DATE_FORMAT(objectid_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY)))
+	</update>   
+	
+	<update id="insertproximity"  parameterType="hashMap" >		
+		INSERT INTO bpw.bpw_location_analytics_proximity  (
+    				input_dt
+    				,type
+    				,count
+    				,apTags
+    	)
+		(SELECT DATE_FORMAT(objectid_dt, '%Y-%m-%d %H') as input_dt
+				,'connect' as type
+				, count(distinct(clientMac)) as count
+				,apTags
+		   FROM bpw.bpw_location_client
+		  WHERE ipv4 is not null and run_flag is null and DATE_FORMAT(objectid_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+	   GROUP BY DATE(objectid_dt), HOUR(objectid_dt), FLOOR(MINUTE(objectid_dt) / 60)
+       ORDER BY objectid_dt DESC)
+		UNION ALL
+	  (SELECT DATE_FORMAT(objectid_dt ,'%Y-%m-%d %H') as date
+	         ,'passby' as type
+	         ,count(distinct(objectid_dt)) as count
+	         ,apTags
+	    FROM bpw.bpw_location_client
+	   WHERE ipv4 is null and run_flag is null and DATE_FORMAT(objectid_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+    GROUP BY DATE(objectid_dt), HOUR(objectid_dt), FLOOR(MINUTE(objectid_dt) / 60)
+    ORDER BY objectid_dt DESC)
+	 UNION ALL
+	(SELECT DATE_FORMAT(objectid_dt ,'%Y-%m-%d %H') as date
+	       ,'visit' as type
+	       ,count(distinct(clientMac)) as count
+	       ,apTags
+	   FROM bpw.bpw_location_client
+	  WHERE ipv4 is null and rssi >= 20 and run_flag is null and DATE_FORMAT(objectid_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+   GROUP BY DATE(objectid_dt), HOUR(objectid_dt), FLOOR(MINUTE(objectid_dt) / 60)
+   ORDER BY objectid_dt DESC)
+	</update>  
+	
+	<update id="insertengagement"  parameterType="hashMap" >
+	INSERT INTO bpw.bpw_location_analytics_engagement  (
+    				input_dt
+    				,apTags
+    				,type
+    				,cnt    
+    	)
+		select a.date, a.apTags, '5_20mins' as type, sum(a.5_20mins) as cnt from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as 5_20mins FROM bpw.bpw_location_analytics
+		WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by clientMac
+		having count(clientMac) between 5 and 20		
+		) a
+		group by apTags
+		union
+		select a.date, a.apTags, '20_60mins' as type, sum(a.20_60mins) as cnt from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as 20_60mins FROM bpw.bpw_location_analytics
+		WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by clientMac
+		having count(clientMac) between 20 and 60		
+		) a
+		group by apTags
+		union
+		select a.date, a.apTags, '1_6hrs' as type ,sum(a.1_6hrs) as cnt from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as 1_6hrs FROM bpw.bpw_location_analytics
+		WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by clientMac
+		having count(clientMac) between 60 and 360		
+		) a
+		group by apTags
+		union
+		select a.date, a.apTags, '1_6hrsOver' as type, sum(a.1_6hrsOver) from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as 1_6hrsOver FROM bpw.bpw_location_analytics
+		WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by clientMac
+		having count(clientMac) >= 360		
+		) a
+		group by apTags
+	</update>
+	
+	<update id="insertloyalty"  parameterType="hashMap" >
+	INSERT INTO bpw.bpw_location_analytics_loyalty  (
+    				input_dt
+    				,apTags
+    				,type
+    				,cnt    
+    	)
+    select a.date, a.apTags, 'first_time' as type, sum(a.first_time) as cnt from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as first_time FROM bpw.bpw_location_analytics
+		WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by clientMac
+		having count(clientMac) > 20
+		) a
+		group by apTags
+		union
+		select a.date, a.apTags, 'daily' as type, sum(a.daily) as cnt from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as daily FROM bpw.bpw_location_analytics
+    WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d') between (SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 8 DAY)) and (SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))		
+		group by clientMac
+		having count(clientMac) > 520	
+		) a
+    WHERE DATE_FORMAT(date ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by apTags
+		union
+		select a.date, a.apTags, 'weekly' as type ,sum(a.weekly) as cnt from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as weekly FROM bpw.bpw_location_analytics
+		WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d') between (SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 14 DAY)) and (SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))		
+		group by clientMac
+		having count(clientMac) > 2200
+		) a
+    WHERE DATE_FORMAT(date ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by apTags
+		union
+		select a.date, a.apTags, 'occasional' as type, sum(a.occasional) from(
+		select DATE_FORMAT(input_dt ,'%Y-%m-%d') as date,apTags, count(distinct(clientMac)) as occasional FROM bpw.bpw_location_analytics
+		WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d') between (SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 2 DAY)) and (SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))		
+		group by clientMac
+		having count(clientMac) >= 440		
+		) a
+    WHERE DATE_FORMAT(date ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+		group by apTags
+	</update>
+		
+	<update id="update"  parameterType="hashMap">
+		UPDATE bpw.bpw_location_client 
+		   SET run_flag = 'succ' 
+		 WHERE DATE_FORMAT(objectid_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+	</update>
+	
+    <delete id="delete"  parameterType="hashMap">
+		 DELETE FROM bpw_location_client 
+		 WHERE DATE_FORMAT(objectid_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))
+	</delete>
+	
+	<delete id="deleteanalytics"  parameterType="hashMap">
+		DELETE FROM bpw_location_analytics   
+        WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d') &lt; (SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 29 DAY))		
+	</delete>
+	
+	<select id="selectproximity"   resultType="hashMap">
+		SELECT a.* FROM (
+		SELECT id, input_dt, apTags, type, cnt 
+		  FROM bpw.bpw_location_analytics_engagement
+		 WHERE DATE_FORMAT(input_dt ,'%Y-%m-%d')=(SELECT DATE_SUB(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY))	
+			) a
+    </select> 
+	
+</mapper>

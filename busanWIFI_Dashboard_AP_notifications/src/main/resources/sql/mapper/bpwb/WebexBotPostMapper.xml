@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpwb/WebexBotPost">
+
+ 	<select id="selectStatus"   resultType="hashMap">
+		select status, count(status) as count
+		from (
+			SELECT ss.updateDt, ss.name, ww.model, ww.mac, ww.tags, ww.serial, nvl(ss.status,'nosignal') status
+			FROM bpw_wireless ww LEFT JOIN (
+			SELECT s.name,s.updateDt, s.serial, MAX(s.lastReportedAt) lastReportedAt, MAX(s.status) STATUS FROM bpw_wireless_status s
+			WHERE DATE_ADD(NOW(), INTERVAL -11 HOUR) < s.lastReportedAt
+			GROUP BY s.serial
+			) ss
+			ON ww.serial = ss.serial
+		) bb
+		group by status;
+    </select>
+	
+	<select id="selectStatusDetail"   resultType="hashMap">
+		select *
+		from (
+			SELECT ss.updateDt, ss.name, ww.model, ww.mac, ww.tags, ww.serial, nvl(ss.status,'nosignal') status
+			FROM bpw_wireless ww LEFT JOIN (
+			SELECT s.name,s.updateDt,  s.serial, MAX(s.lastReportedAt) lastReportedAt, MAX(s.status) STATUS  FROM bpw_wireless_status s
+			WHERE DATE_ADD(NOW(), INTERVAL -11 HOUR) < s.lastReportedAt
+			
+			GROUP BY s.serial
+			) ss
+			ON ww.serial = ss.serial
+		) a
+		where a.status != 'online'
+	</select>
+</mapper>

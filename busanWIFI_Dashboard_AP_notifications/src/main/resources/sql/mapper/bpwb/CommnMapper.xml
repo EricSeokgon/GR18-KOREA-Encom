@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpwb/Commn">
+
+ 	<select id="selectObjectidDay"   resultType="hashMap">
+		SELECT a.* FROM (
+			SELECT date_format(objectid_dt, '%Y%m%d') objectid_day FROM bpw_location_client   group BY date_format(objectid_dt, '%Y%m%d')
+			) a 
+		order BY objectid_day asc
+    </select> 
+
+
+</mapper>
