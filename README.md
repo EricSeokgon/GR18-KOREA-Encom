@@ -25,3 +25,53 @@ $ python face_recog.py
 $ python live_streaming.py
 ```
 Put picture with the person’s face in ‘knowns’ directory. Change the file name as the person’s name like ‘john.jpg’. Then run ‘python face_recog.py’ or ‘python live_streaming.py’ to send video over network.
+
+
+### cmxreceiver-mongodb
+
+### A basic web service to accept CMX data from a Cisco Meraki network
+- Accept a GET request from Meraki and respond with a validator
+- Meraki will POST to server, if validated.
+- POST will contain a secret, which can be verified by the server.
+- JSON data will be in the req.body.data. This will be available in the cmxData function's data object.
+*note: CMX is now called Scanning API in Meraki documentation
+
+## cmxreceiver-mongodb.py
+-- Extends the basic app by placing data into a local MongoDB database.
+
+## Prerequisites
+* Flask must be installed
+http://flask.pocoo.org/docs/0.12/
+
+* Cisco Meraki Network with CMX/Scanning API enabled and configured to point to this server
+
+## Installation and Run
+```
+$ git clone <<this repo>>
+```
+### Direct Run with Python3
+* Receiver with MongoDB
+```
+python3 cmxreceiver-mongodb.py -v <validator> -s <secret>'
+```
+
+### Via Flask
+* Receiver with MongoDB
+```
+export FLASK_APP=cmxreceiver-mongodb.py -v yourValidatorKey -s yourSecret
+flask run -h 0.0.0.0
+ * Running on http://0.0.0.0:5000/
+```
+
+## Defaults
+* Port: 5000
+* CMX Post URL: http://yourserver:5000/
+
+## TIP
+* use ngrok to expose port 5000
+```
+ngrok http 5000
+```
+Then use the new url it creates as your base URL. `https://2a6eed03.ngrok.io/`
+
+
