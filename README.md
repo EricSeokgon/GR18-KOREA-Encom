@@ -42,7 +42,10 @@ Put picture with the person’s face in ‘knowns’ directory. Change the file 
 ## Prerequisites
 * Flask must be installed
 http://flask.pocoo.org/docs/0.12/
-
+* OpenCV
+https://opencv.org/releases/
+* Numpy
+https://numpy.org/
 * Cisco Meraki Network with CMX/Scanning API enabled and configured to point to this server
 
 ## Installation and Run
