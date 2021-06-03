@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ncom</groupId>
+	<artifactId>bpw</artifactId>
+	<packaging>war</packaging>
+	<version>1.0.0</version>
+	<name>bpw</name>
+	<url>http://www.egovframe.go.kr</url>
+
+	<repositories>
+		<repository>
+			<id>ncom-releases</id>
+			<url>http://nexus.e-ncom.co.kr/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>ncom-snapshots</id>
+			<url>http://nexus.e-ncom.co.kr/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>mvn2</id>
+			<url>https://repo1.maven.org/maven2/</url>
+		</repository>
+		<repository>
+			<id>egovframe</id>
+			<url>http://www.egovframe.go.kr/maven/</url>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>ncom</id>
+			<url>http://nexus.e-ncom.co.kr/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>ncom</id>
+			<url>http://nexus.e-ncom.co.kr/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<spring.maven.artifact.version>4.3.25.RELEASE</spring.maven.artifact.version>
+		<egovframework.rte.version>3.10.0</egovframework.rte.version>
+		<weblib-dir>${project.basedir}/src/main/webapp/WEB-INF/lib</weblib-dir>
+	</properties>
+
+	<dependencies>
+
+		<!-- 표준프레임워크 실행환경 -->
+		<dependency>
+			<groupId>egovframework.rte</groupId>
+			<artifactId>egovframework.rte.ptl.mvc</artifactId>
+			<version>${egovframework.rte.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>egovframework.rte</groupId>
+			<artifactId>egovframework.rte.psl.dataaccess</artifactId>
+			<version>${egovframework.rte.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>egovframework.rte</groupId>
+			<artifactId>egovframework.rte.fdl.idgnr</artifactId>
+			<version>${egovframework.rte.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>egovframework.rte</groupId>
+			<artifactId>egovframework.rte.fdl.property</artifactId>
+			<version>${egovframework.rte.version}</version>
+		</dependency>
+
+		<!-- 표준프레임워크 실행환경 -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.4.30.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ncomegf</groupId>
+			<artifactId>base</artifactId>
+<!-- 			<version>1.0.1-RELEASES</version> -->
+				<version>1.0.2-SNAPSHOT</version>
+			<!-- <version>LATEST</version> -->
+			<exclusions>
+				<exclusion>
+					<artifactId>hibernate-core</artifactId>
+					<groupId>org.hibernate</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>1.11.23.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.10.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.10.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-spring-webmvc</artifactId>
+			<version>2.10.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-models</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.16</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.hateoas</groupId> -->
+		<!-- <artifactId>spring-hateoas</artifactId> -->
+		<!-- <version>1.2.4</version> -->
+		<!-- </dependency> -->
+
+
+		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
+			<version>0.25.0.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>2.3.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.6.5</version>
+		</dependency>
+		<!-- spring json -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+
+	</dependencies>
+
+
+	<!-- 운영 배포용 Profile uses : mvn clean install -P *** -->
+	<profiles>
+		<profile>
+			<id>local</id>
+			<!-- -P 프로파일 선택 없을시 기본 프로파일 -->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<env>local</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>real</id>
+			<properties>
+				<env>real</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+		</profile>
+	</profiles>
+
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources-${env}</directory>
+			</resource>
+		</resources>
+		<!-- 운영 배포용 Profile uses : mvn clean install -P *** end -->
+
+		<defaultGoal>install</defaultGoal>
+		<directory>${basedir}/target</directory>
+		<finalName>${artifactId}</finalName>
+		<pluginManagement>
+			<plugins>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<encoding>UTF-8</encoding>
+						<maxmem>1024m</maxmem>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+
+	</build>
+
+</project>

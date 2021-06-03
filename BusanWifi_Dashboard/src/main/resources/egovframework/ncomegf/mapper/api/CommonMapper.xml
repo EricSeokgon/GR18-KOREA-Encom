@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpw/api/common">
+
+
+<!-- 
+아래 테이블 4개는 이름이 길어서 생성 안됐으니 사용 할 개발자는 이름을 줄여서 사용
+CREATE TABLE `bpwapi_organizations_organizationId_devices_uplinksLossAndLatency`    (`input_dt` TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '등록 일시', `data` LONGTEXT NULL COMMENT '머라키 데이터' COLLATE 'utf8mb4_unicode_ci', `serial` VARCHAR(50) NULL COMMENT 'serial ID' COLLATE 'utf8mb4_unicode_ci', `networkId` VARCHAR(50) NULL COMMENT '네트워크 ID' COLLATE 'utf8mb4_unicode_ci', `bluetoothClientId` VARCHAR(50) NULL COMMENT 'bluetoothClientId ID' COLLATE 'utf8mb4_unicode_ci', `clientId` VARCHAR(50) NULL COMMENT 'clientId ID' COLLATE 'utf8mb4_unicode_ci', `organizationId` VARCHAR(50) NULL COMMENT 'organizationId ID' COLLATE 'utf8mb4_unicode_ci', INDEX `idx_dt` (`input_dt`) USING BTREE)COLLATE='utf8mb4_unicode_ci'ENGINE=InnoDB;
+CREATE TABLE `bpwapi_networks_networkId_wireless_clients_clientId_connectionStats`      (`input_dt` TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '등록 일시', `data` LONGTEXT NULL COMMENT '머라키 데이터' COLLATE 'utf8mb4_unicode_ci', `serial` VARCHAR(50) NULL COMMENT 'serial ID' COLLATE 'utf8mb4_unicode_ci', `networkId` VARCHAR(50) NULL COMMENT '네트워크 ID' COLLATE 'utf8mb4_unicode_ci', `bluetoothClientId` VARCHAR(50) NULL COMMENT 'bluetoothClientId ID' COLLATE 'utf8mb4_unicode_ci', `clientId` VARCHAR(50) NULL COMMENT 'clientId ID' COLLATE 'utf8mb4_unicode_ci', `organizationId` VARCHAR(50) NULL COMMENT 'organizationId ID' COLLATE 'utf8mb4_unicode_ci', INDEX `idx_dt` (`input_dt`) USING BTREE)COLLATE='utf8mb4_unicode_ci'ENGINE=InnoDB;
+CREATE TABLE `bpwapi_networks_networkId_wireless_clients_clientId_connectivityEvents`    (`input_dt` TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '등록 일시', `data` LONGTEXT NULL COMMENT '머라키 데이터' COLLATE 'utf8mb4_unicode_ci', `serial` VARCHAR(50) NULL COMMENT 'serial ID' COLLATE 'utf8mb4_unicode_ci', `networkId` VARCHAR(50) NULL COMMENT '네트워크 ID' COLLATE 'utf8mb4_unicode_ci', `bluetoothClientId` VARCHAR(50) NULL COMMENT 'bluetoothClientId ID' COLLATE 'utf8mb4_unicode_ci', `clientId` VARCHAR(50) NULL COMMENT 'clientId ID' COLLATE 'utf8mb4_unicode_ci', `organizationId` VARCHAR(50) NULL COMMENT 'organizationId ID' COLLATE 'utf8mb4_unicode_ci', INDEX `idx_dt` (`input_dt`) USING BTREE)COLLATE='utf8mb4_unicode_ci'ENGINE=InnoDB;
+CREATE TABLE `bpwapi_networks_networkId_wireless_clients_clientId_latencyHistory`      (`input_dt` TIMESTAMP NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '등록 일시', `data` LONGTEXT NULL COMMENT '머라키 데이터' COLLATE 'utf8mb4_unicode_ci', `serial` VARCHAR(50) NULL COMMENT 'serial ID' COLLATE 'utf8mb4_unicode_ci', `networkId` VARCHAR(50) NULL COMMENT '네트워크 ID' COLLATE 'utf8mb4_unicode_ci', `bluetoothClientId` VARCHAR(50) NULL COMMENT 'bluetoothClientId ID' COLLATE 'utf8mb4_unicode_ci', `clientId` VARCHAR(50) NULL COMMENT 'clientId ID' COLLATE 'utf8mb4_unicode_ci', `organizationId` VARCHAR(50) NULL COMMENT 'organizationId ID' COLLATE 'utf8mb4_unicode_ci', INDEX `idx_dt` (`input_dt`) USING BTREE)COLLATE='utf8mb4_unicode_ci'ENGINE=InnoDB;
+ -->
+ 	<select id="select"  parameterType="java.util.HashMap"  resultType="dataMap">
+		
+            SELECT * FROM ${apiKey}
+            WHERE 1=1
+            AND serial = IFNULL(#{serial},serial)
+            AND networkId = IFNULL(#{networkId},networkId)
+            AND bluetoothClientId = IFNULL(#{bluetoothClientId},bluetoothClientId)
+            AND clientId = IFNULL(#{clientId},clientId)
+            AND organizationId = IFNULL(#{organizationId},organizationId)
+             ORDER BY input_dt DESC LIMIT 0, #{pagePer}
+            
+    </select>
+    
+    
+    	<insert id="insert" parameterType="java.util.HashMap">
+		/* /ckf/diet/WeekDietMgr.GeneralInsert */
+		INSERT INTO ${apiKey} (`data`,`serial`,`networkId`,`bluetoothClientId`,`clientId`,`organizationId` )
+		VALUES (
+		#{jsonString},#{serial},#{networkId},#{bluetoothClientId},#{clientId},#{organizationId}
+		 )
+	</insert>
+    
+     
+
+
+</mapper>

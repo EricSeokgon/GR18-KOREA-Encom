@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+
+    <properties>
+<!--         <property name="pattern">%d{HH:mm:ss.SSS} %5p [%c{1}] %m%n</property> -->
+        <property name="pattern">%d{yyyy-MM-dd HH:mm:ss} [%-5level] \(%file:%line\) %msg%n</property>
+        <property name="logDir">${sys:base.fileHome}/log</property>
+        <property name="logName">jupiter</property>
+    </properties>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${pattern}" />
+        </Console>
+        <RollingFile name="file" append="true"
+            fileName="${logDir}/${logName}.log" filePattern="${logDir}/${logName}_%d{yyyyMMdd}.log">
+            <PatternLayout pattern="${pattern}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="ERROR">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="file" />
+        </Root>
+        <!-- <Logger name="java.sql" level="ERROR" additivity="false"> -->
+        <!-- <AppenderRef ref="console" /> -->
+        <!-- <AppenderRef ref="file"/> -->
+        <!-- </Logger> -->
+        <!-- <Logger name="jdbc.sqltiming" level="ERROR" additivity="false"> -->
+        <!-- <AppenderRef ref="console" /> -->
+        <!-- <AppenderRef ref="file"/> -->
+        <!-- </Logger> -->
+        <!-- <Logger name="egovframework" level="ERROR" additivity="false"> -->
+        <!-- <AppenderRef ref="console" /> -->
+        <!-- <AppenderRef ref="file"/> -->
+        <!-- </Logger> -->
+
+        <!-- <Logger name="org.springframework" level="ERROR" additivity="false"> -->
+        <!-- <AppenderRef ref="console" /> -->
+        <!-- <AppenderRef ref="file"/> -->
+        <!-- </Logger> -->
+
+        <!-- <Logger name="com.axisj.axu4j.tags" level="ERROR" additivity="false"> -->
+        <!-- <AppenderRef ref="console" /> -->
+        <!-- <AppenderRef ref="file"/> -->
+        <!-- </Logger> -->
+
+         <Logger name="org.hibernate" level="DEBUG" additivity="false">
+        <AppenderRef ref="console" />
+        <AppenderRef ref="file"/>
+        </Logger>
+         <Logger name="org.hibernate.loader.Loader" level="info" additivity="false">
+        <AppenderRef ref="console" />
+        <AppenderRef ref="file"/>
+        </Logger>
+        
+         <Logger name="org.hibernate.event.internal.AbstractSaveEventListener" level="info" additivity="false">
+        <AppenderRef ref="console" />
+        <AppenderRef ref="file"/>
+        </Logger>
+         <Logger name="org.hibernate.SQL" level="info" additivity="false">
+        <AppenderRef ref="console" />
+        <AppenderRef ref="file"/>
+        </Logger>
+        
+        <Logger name="com.ncom" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="file" />
+        </Logger>
+        <Logger name="ncomegf" level="${sys:mode.log}" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="file" />
+        </Logger>
+
+
+    </Loggers>
+</Configuration>

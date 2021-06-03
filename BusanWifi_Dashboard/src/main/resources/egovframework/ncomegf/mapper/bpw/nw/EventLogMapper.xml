@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpw/nw/EventLog">
+
+	<sql id="selectByPagingClass-where">
+		WHERE 1=1
+		<if test="networkId != null and networkId != ''">
+			AND c.networkId = #{networkId}
+		</if>
+		<if test="clientId != null and clientId != ''">
+			AND c.clientId = #{clientId}
+		</if>
+		<if test="deviceName != null and deviceName != ''">
+			AND c.deviceName like  concat('%',#{deviceName},'%') 
+		</if>
+		<if test="deviceSerial != null and deviceSerial != ''">
+			AND c.deviceSerial like   concat('%',#{deviceSerial},'%') 
+		</if>
+		<if test="type != null and type != ''">
+			AND c.type = #{type}
+		</if>
+		<if test="startDt != null and startDt != ''">
+			AND STR_TO_DATE(substr(occurredAt,1,10), '%Y-%m-%d') >= STR_TO_DATE(#{startDt}, '%Y-%m-%d')
+		</if>
+		<if test="endDt != null and endDt != ''">
+			AND STR_TO_DATE(substr(occurredAt,1,10), '%Y-%m-%d') <![CDATA[<=]]> STR_TO_DATE(#{endDt}, '%Y-%m-%d')
+		</if>
+	</sql>
+	
+	<!-- 과정정보 -->
+	<select id="selectByPagingCnt" parameterType="java.util.Map" resultType="int">
+		SELECT COUNT(1) FROM bpw_event_log c
+		<include refid="selectByPagingClass-where" />
+	</select>
+
+
+	<select id="selectByPaging" parameterType="java.util.Map" resultType="dataMap">
+		SELECT * FROM bpw_event_log  c
+		<include refid="selectByPagingClass-where" />
+		ORDER BY occurredAt DESC
+		LIMIT #{pageNoMysql}, #{pageSize}
+	</select>
+
+</mapper>

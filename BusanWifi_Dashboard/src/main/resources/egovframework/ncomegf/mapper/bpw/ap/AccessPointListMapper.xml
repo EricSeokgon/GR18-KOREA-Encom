@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpw/ap/AccessPointList">
+ 	<select id="selectAP"  parameterType="java.util.HashMap"  resultType="dataMap">
+		
+		SELECT DISTINCT(SUBSTRING_INDEX(tags,',',2)) AS tag
+		  FROM bpw_wireless
+		 WHERE networkId = #{networkId}
+    </select>
+    
+    <select id="selectAccessPointList"  parameterType="java.util.HashMap"  resultType="dataMap">
+
+		SELECT a.* 
+			 , b.lastReportedAt
+			 , IFNULL(b.status,"unreachable") AS status
+		  FROM bpw_wireless a
+	 LEFT JOIN (SELECT *
+		 		  FROM ( 
+		 				SELECT *
+		 					 , RANK() over(PARTITION BY serial ORDER BY lastReportedAt DESC) AS rnk
+						 FROM bpw_wireless_status
+		 				WHERE networkId = #{networkId}
+		 				  AND lastReportedAt >= #{lastReportedAt}
+		 			 GROUP BY serial
+		 				) t
+		 		WHERE rnk = 1) b
+		  ON a.networkId = b.networkId AND a.serial = b.serial
+		 WHERE a.networkId = #{networkId}
+		 <if test="tag1 != '' and tag1 != null">
+           	AND tags like ('%${tag1}%')
+         </if>
+         <if test="tag2 != '' and tag2 != null">
+           	AND tags like ('%${tag2}%')
+         </if>
+         <if test="sch_Status != '' and sch_Status != null">
+           	AND IFNULL(b.status,"unreachable") = #{sch_Status}
+         </if>
+    </select>
+    
+</mapper>

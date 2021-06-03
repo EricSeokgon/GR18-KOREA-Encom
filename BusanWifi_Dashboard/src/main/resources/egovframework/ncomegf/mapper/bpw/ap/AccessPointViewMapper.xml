@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpw/ap/AccessPointView">
+
+
+    <select id="select_event_log" parameterType="dataMap" resultType="dataMap">
+        SELECT seq
+             , clientDescription
+             , clientId
+             , description
+             , deviceName
+             , deviceSerial
+             , networkId
+             , occurredAt
+             , ssidName
+             , ssidNumber
+          FROM bpw_event_log 
+         WHERE deviceSerial = #{serial}
+           AND networkId = #{networkId}
+         ORDER BY occurredAt DESC 
+    </select>
+    
+   <!--  <select id="select_ssid_status" parameterType="dataMap" resultType="dataMap">
+        SELECT seq
+             , clientDescription
+             , clientId
+             , description
+             , deviceName
+             , deviceSerial
+             , networkId
+             , occurredAt
+             , ssidName
+             , ssidNumber
+             , type
+             , updateDt 
+          FROM bpw_event_log 
+         WHERE deviceSerial = #{serial}
+           AND networkId = #{networkId}
+         GROUP BY ssidNumber
+         ORDER BY updateDt DESC 
+    </select> -->
+    
+    <select id="select_ap_status" parameterType="dataMap" resultType="dataMap">
+        SELECT seq
+             , gateway
+             , ipType
+             , lanIp
+             , lastReportedAt
+             , mac
+             , name
+             , networkId
+             , primaryDns
+             , publicIp
+             , secondaryDns
+             , serial
+             , status
+             , updateDt 
+          FROM bpw_wireless_status 
+         WHERE serial = #{serial}
+           AND networkId = #{networkId} 
+           AND DATE_FORMAT(updateDt, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')
+         ORDER BY updateDt DESC 
+         LIMIT 1
+    </select>
+    
+    <select id="select_pre_clients" parameterType="dataMap" resultType="dataMap">
+        SELECT id
+             , description
+             , firstSeen
+             , groupPolicy8021x
+             , ip
+             , ip6
+             , ip6Local
+             , lastSeen
+             , mac
+             , manufacturer
+             , notes
+             , os
+             , recentDeviceMac
+             , recentDeviceName
+             , recentDeviceSerial
+             , smInstalled
+             , ssid
+             , status
+             , switchport
+             , vlan
+             , updateDt
+          FROM bpw_clients 
+         WHERE recentDeviceSerial = #{serial}
+         ORDER BY updateDt DESC 
+    </select>
+    
+</mapper>

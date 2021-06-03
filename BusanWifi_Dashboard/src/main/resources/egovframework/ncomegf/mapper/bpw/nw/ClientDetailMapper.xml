@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpw/nw/ClientDetail">
+	<select id="client_vw_one" parameterType="dataMap" resultType="dataMap">
+		SELECT
+    		a.*
+    	FROM
+    	(SELECT
+    		cl.*,
+			DATE_FORMAT(DATE_ADD(cl.lastSeen,INTERVAL +9 HOUR), '%Y-%m-%d %T') AS tstime,
+			wl.networkId,
+			jn.tsunix,
+			jn.now_ts
+		FROM bpw_clients cl
+		LEFT JOIN (
+				SELECT 
+					TRUNCATE(UNIX_TIMESTAMP(lastSeen) ,0) AS tsunix,
+					UNIX_TIMESTAMP() AS now_ts,
+					id
+				FROM bpw_clients
+			) jn ON cl.id = jn.id
+		LEFT JOIN bpw_wireless wl ON wl.serial = cl.recentDeviceSerial and wl.mac = cl.recentDeviceMac
+		WHERE wl.networkId = #{networkId}
+		AND cl.id = #{clientId}
+		) a
+		WHERE CONVERT(ABS(a.now_ts-a.tsunix),INTEGER) <![CDATA[<=]]> #{timespan}
+		ORDER BY a.status desc, a.tstime desc
+	</select>
+	
+	<select id="client_traffic" parameterType="dataMap" resultType="dataMap">
+		SELECT
+			gr.t,
+			<include refid="timespan-show-dateformat"/>
+			gr.application,
+			gr.clientId,
+			SUM(gr.received) AS received,
+			SUM(gr.sent) AS sent
+		FROM (
+			SELECT
+				IFNULL(tm.alltstime, a.tstime) AS t,
+				tm.alltstime,
+				a.tstime,
+				a.application,
+				a.clientId,
+				a.received,
+				a.sent
+			FROM (
+				<include refid="timespan-select"/>
+			) tm
+			LEFT JOIN (
+				SELECT
+					tr.seq,
+					tr.application,
+					tr.clientId,
+					tr.ts,
+					<include refid="timespan-dateformat"/>
+					tr.t0,
+					tr.t1,
+					CONVERT(ABS(jn.now_ts-jn.tsunix),INTEGER) AS minus,
+					SUM(tr.received) AS received,
+					SUM(tr.sent) AS sent
+				FROM bpw_client_traffic tr
+				LEFT JOIN (
+					SELECT 
+						TRUNCATE(UNIX_TIMESTAMP(ts) ,0) AS tsunix,
+						UNIX_TIMESTAMP() AS now_ts,
+						seq
+					FROM bpw_client_traffic
+				) jn ON tr.seq = jn.seq
+				WHERE tr.networkId = #{networkId}
+					AND tr.clientId = #{clientId}
+					AND CONVERT(ABS(jn.now_ts-jn.tsunix),INTEGER)  <![CDATA[<=]]>  #{timespan}
+					AND tr.recentDeviceSerial = #{serial}
+				GROUP BY tr.application, tstime
+			) a ON tm.alltstime = a.tstime
+			
+			UNION
+			
+			SELECT
+				IFNULL(tm.alltstime, a.tstime) AS t,
+				tm.alltstime,
+				a.tstime,
+				a.application,
+				a.clientId,
+				a.received,
+				a.sent
+			FROM (
+				<include refid="timespan-select"/>
+			) tm
+			RIGHT JOIN (
+				SELECT
+					tr.seq,
+					tr.application,
+					tr.clientId,
+					tr.ts,
+					<include refid="timespan-dateformat"/>	 
+					tr.t0,
+					tr.t1,
+					CONVERT(ABS(jn.now_ts-jn.tsunix),INTEGER) AS minus,
+					SUM(tr.received) AS received,
+					SUM(tr.sent) AS sent
+				FROM bpw_client_traffic tr
+				LEFT JOIN (
+					SELECT 
+						TRUNCATE(UNIX_TIMESTAMP(ts) ,0) AS tsunix,
+						UNIX_TIMESTAMP() AS now_ts,
+						seq
+					FROM bpw_client_traffic
+				) jn ON tr.seq = jn.seq
+				WHERE tr.networkId = #{networkId}
+					AND tr.clientId = #{clientId}
+					AND CONVERT(ABS(jn.now_ts-jn.tsunix),INTEGER)  <![CDATA[<=]]>  #{timespan}
+					AND tr.recentDeviceSerial = #{serial}
+				GROUP BY tr.application, tstime
+			) a ON tm.alltstime = a.tstime
+			ORDER BY t
+		) gr
+		GROUP BY gr.t
+	</select>
+	
+	<sql id="timespan-show-dateformat">
+		<choose>
+			<when test="timespan == '7200'">
+				IFNULL(DATE_FORMAT(gr.alltstime, '%H:%i'), DATE_FORMAT(gr.tstime, '%H:%i')) AS showtstime,
+			</when>
+			<when test="timespan == '604800'">
+				IFNULL(DATE_FORMAT(gr.alltstime, '%d %a'), DATE_FORMAT(gr.tstime, '%d %a')) AS showtstime,
+			</when>
+			<when test="timespan == '2592000'">
+				IFNULL(DATE_FORMAT(gr.alltstime, '%M %d'), DATE_FORMAT(gr.tstime, '%M %d')) AS showtstime,
+			</when>
+			<otherwise><!--86400-->
+				IFNULL(gr.alltstime, TIME_FORMAT(gr.tstime, '%H:00')) AS showtstime,
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<sql id="timespan-dateformat">
+		<choose>
+			<when test="timespan == '7200'">
+				DATE_FORMAT(tr.ts,'%H:%i') AS tstime,
+			</when>
+			<when test="timespan == '604800'">
+				DATE_FORMAT(tr.ts,'%Y-%m-%d %a') AS tstime,
+			</when>
+			<when test="timespan == '2592000'">
+				DATE_FORMAT(tr.ts,'%Y-%m-%d') AS tstime,
+			</when>
+			<otherwise><!--86400-->
+				DATE_FORMAT(tr.ts,'%H:00') AS tstime,
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<sql id="timespan-select">
+		<choose>
+			<when test="timespan == '7200'">
+				SELECT DATE_FORMAT(DATE_ADD(DATE_FORMAT(now(), '%Y-%m-%d %H:00'),INTERVAL -2 HOUR),'%H:%i') alltstime UNION ALL
+				SELECT DATE_FORMAT(DATE_ADD(DATE_ADD(DATE_FORMAT(now(), '%Y-%m-%d %H:00'),INTERVAL -2 HOUR),INTERVAL +20 MINUTE),'%H:%i') alltstime UNION ALL
+				SELECT DATE_FORMAT(DATE_ADD(DATE_ADD(DATE_FORMAT(now(), '%Y-%m-%d %H:00'),INTERVAL -2 HOUR),INTERVAL +40 MINUTE),'%H:%i') alltstime UNION ALL
+				SELECT DATE_FORMAT(DATE_ADD(DATE_FORMAT(now(), '%Y-%m-%d %H:00'),INTERVAL -1 HOUR),'%H:%i') alltstime UNION ALL
+				SELECT DATE_FORMAT(DATE_ADD(DATE_ADD(DATE_FORMAT(now(), '%Y-%m-%d %H:00'),INTERVAL -1 HOUR),INTERVAL +20 MINUTE),'%H:%i') alltstime UNION ALL
+				SELECT DATE_FORMAT(DATE_ADD(DATE_ADD(DATE_FORMAT(now(), '%Y-%m-%d %H:00'),INTERVAL -1 HOUR),INTERVAL +40 MINUTE),'%H:%i') alltstime UNION ALL
+				SELECT DATE_FORMAT(DATE_FORMAT(now(), '%Y-%m-%d %H:00'),'%H:%i') alltstime
+			</when>
+			
+			<when test="timespan == '604800'"><!--%d %a-->
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -7 DAY), '%Y-%m-%d %a') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 DAY), '%Y-%m-%d %a') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -5 DAY), '%Y-%m-%d %a') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -4 DAY), '%Y-%m-%d %a') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -3 DAY), '%Y-%m-%d %a') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -2 DAY), '%Y-%m-%d %a') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -1 DAY), '%Y-%m-%d %a') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(now(), '%Y-%m-%d %a') AS alltstime
+			</when>
+			
+			<when test="timespan == '2592000'"><!--'%M %d'-->
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -31 DAY), '%Y-%m-%d') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -26 DAY), '%Y-%m-%d') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -21 DAY), '%Y-%m-%d') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -16 DAY), '%Y-%m-%d') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -11 DAY), '%Y-%m-%d') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -6 DAY), '%Y-%m-%d') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(DATE_ADD(now(), INTERVAL -1 DAY), '%Y-%m-%d') AS alltstime UNION ALL
+					SELECT DATE_FORMAT(now(), '%Y-%m-%d') AS alltstime
+			</when>
+			
+			<otherwise><!--when test="timespan == '86400'"-->
+					SELECT '00:00' alltstime UNION ALL
+					SELECT '01:00' alltstime UNION ALL
+					SELECT '02:00' alltstime UNION ALL
+					SELECT '03:00' alltstime UNION ALL
+					SELECT '04:00' alltstime UNION ALL
+					SELECT '05:00' alltstime UNION ALL
+					SELECT '06:00' alltstime UNION ALL
+					SELECT '07:00' alltstime UNION ALL
+					SELECT '08:00' alltstime UNION ALL
+					SELECT '09:00' alltstime UNION ALL
+					SELECT '10:00' alltstime UNION ALL
+					SELECT '11:00' alltstime UNION ALL
+					SELECT '12:00' alltstime UNION ALL
+					SELECT '13:00' alltstime UNION ALL
+					SELECT '14:00' alltstime UNION ALL
+					SELECT '15:00' alltstime UNION ALL
+					SELECT '16:00' alltstime UNION ALL
+					SELECT '17:00' alltstime UNION ALL
+					SELECT '18:00' alltstime UNION ALL
+					SELECT '19:00' alltstime UNION ALL
+					SELECT '20:00' alltstime UNION ALL
+					SELECT '21:00' alltstime UNION ALL
+					SELECT '22:00' alltstime UNION ALL
+					SELECT '23:00' alltstime
+			</otherwise>
+		</choose>
+	</sql>
+	
+	
+	<select id="traffic_usage" resultType="dataMap" parameterType="dataMap">
+		SELECT 
+			a.ts, 
+			a.application, 
+			IFNULL(SUM(a.received),0) AS received,
+			IFNULL(SUM(a.sent),0) AS sent
+		FROM(
+			SELECT
+				tr.seq,
+				tr.application,
+				tr.clientId,
+				tr.networkId,
+				tr.received,
+				tr.sent,
+				<include refid="timespan-dateformat"/><!--DATE_FORMAT(tr.ts,'%H:00') AS tstime-->
+				tr.ts
+			FROM bpw_client_traffic tr
+			LEFT JOIN (
+				SELECT 
+					TRUNCATE(UNIX_TIMESTAMP(ts) ,0) AS tsunix,
+					UNIX_TIMESTAMP() AS now_ts,
+					seq
+				FROM bpw_client_traffic
+			) jn ON tr.seq = jn.seq
+			WHERE tr.networkId = #{networkId}
+			AND tr.clientId = #{clientId}
+				AND CONVERT(ABS(jn.now_ts-jn.tsunix),INTEGER) <![CDATA[<=]]> #{timespan}
+				AND tr.recentDeviceSerial = #{serial}
+		 )AS a
+		GROUP BY a.application
+		ORDER BY received DESC, sent DESC
+	</select>
+	
+	<select id="network_wireless" parameterType="dataMap" resultType="dataMap">
+		SELECT
+			wr.*
+		FROM bpw_wireless wr
+		WHERE wr.networkId = #{networkId}
+			AND wr.serial = #{serial}
+	</select>
+	
+	<sql id="client_detail-where">
+		<where>
+			1=1
+			<if test="t0 != '' and t0 != null">
+				AND b.t0 = #{t0}
+			</if>
+			<if test="t1 != '' and t1 != null">
+				AND b.t1 = #{t1}
+			</if>
+			<if test="timespan != '' and timespan != null">
+				AND b.minus <![CDATA[<=]]> #{timespan}
+			</if>
+		</where>
+	</sql>
+	
+</mapper>

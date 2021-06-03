@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpw/ap/AccessPointHealth">
+    
+    	<select id="ssid_connection_issue"  parameterType="java.util.HashMap"  resultType="dataMap">
+		
+		SELECT * ,"0" AS fail_count, "0%" AS failed_percent 
+		  FROM bpw_client_traffic 
+		 WHERE networkId = #{networkId}
+		 AND ts >= #{occurredAt}
+		 GROUP BY ssid	
+    </select>
+    
+</mapper>

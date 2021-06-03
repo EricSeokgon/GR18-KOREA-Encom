@@ -1,0 +1,70 @@
+@charset "UTF-8";
+/* NOTO SANS */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+
+@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 100;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');}
+
+@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 300;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');}
+
+@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 400;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format('opentype');}
+
+@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 500;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype');}
+
+@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 700;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype');}
+
+@font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 900;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');}
+
+/* GMARKET SANS */
+@font-face {
+	font-family: 'GmarketSansBold'; font-style: normal; font-weight: 700;
+	src: url('../font/GmarketSansBold.otf'), local('../font/GmarketSansBold.otf'),
+	url('http://script.ebay.co.kr/fonts/GmarketSansBold.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+	url('http://script.ebay.co.kr/fonts/GmarketSansBold.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+	font-family: 'GmarketSansMedium'; font-style: normal; font-weight: 600;
+	src: url('../font/GmarketSansMedium.otf'), local('../font/GmarketSansMedium.otf'),
+	url('http://script.ebay.co.kr/fonts/GmarketSansMedium.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+	url('http://script.ebay.co.kr/fonts/GmarketSansMedium.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+	font-family: 'GmarketSansLight'; font-style: normal; font-weight: 300;
+	src: url('../font/GmarketSansLight.otf'), local('../font/GmarketSansLight.otf'),
+	url('http://script.ebay.co.kr/fonts/GmarketSansLight.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+	url('http://script.ebay.co.kr/fonts/GmarketSansLight.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+*{margin:0; padding:0; font-family:'Noto Sans KR', sans-serif; -webkit-text-size-adjust:none; outline:none;}
+html, body{font-size:15px; line-height:1.3em; width:100%; height:100%; color:#000; -webkit-text-size-adjust:none; font-weight:300; position:relative;}
+body{-webkit-font-smoothing:antialiased; -webkit-text-size-adjust:none; -moz-osx-font-smoothing:grayscale;}
+a{text-decoration:none; color:#000;}
+b{font-weight:500;}
+
+h1, h2, h3{font-weight:500;}
+
+
+/* LAYOUT */
+fieldset, img{border:0; margin:0; padding:0}
+i, em, address{font-style:normal; font-weight:normal}
+
+ul, li, dl{list-style:none}
+label{cursor:pointer}
+
+.nocallout{-webkit-touch-callout:none}
+.pressed{background-color:rgba(0, 0, 0, 0.7)}
+
+textarea{resize:vertical; box-sizing:border-box; font-size:1em;}
+textarea[contenteditable]{-webkit-appearance:none}
+textarea, input, select{-webkit-border-radius:0px; vertical-align:middle}
+
+button{cursor:pointer; border:none;}
+
+select{font-size:12px; border:1px solid #dbdbdb; border-radius:3px; color:#111; padding:5px; appearance:none; -webkit-appearance:none; -moz-appearance:none; background:url(../images/icon_select.png) no-repeat 90% center #fff;}
+select::-ms-expand{display:none;}
+input{-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;outline:0; vertical-align:middle;}
+input[type="text"], input[type="password"], input[type="tel"], input[type="name"], input[type="email"], textarea{background:#fff; border-radius:3px; border:1px solid #e1e1e1; padding:10px}
+input[type="checkbox"] {width:14px; height:14px; vertical-align:middle; box-sizing:border-box; border:1px solid #e1e1e1; background:#fff; border-radius:3px; cursor:pointer;}
+input[type="radio"]{cursor:pointer;}
+
+.cf{ }
+.cf:after{clear:both; content:""; display:block}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="/bpw/ap/AccessPointConnectionLog">
+ 	<select id="connection_log"  parameterType="java.util.HashMap"  resultType="dataMap">
+		
+		SELECT a.* 
+			 , b.tags
+			 , SUBSTRING_INDEX(b.tags,',',1) AS tag1
+			 , SUBSTRING_INDEX(b.tags,',',2) AS tag2
+		  FROM bpw_event_log a JOIN bpw_wireless b
+		    ON a.deviceSerial = b.serial AND a.networkId = b.networkId
+		 WHERE a.networkId = #{networkId}
+		   AND TYPE IN ('association')
+		   AND occurredAt >= #{occurredAt}
+		   <if test="tag1 != '' and tag1 != null">
+           	AND tags like ('%${tag1}%')
+           </if>
+           <if test="tag2 != '' and tag2 != null">
+           	AND tags like ('%${tag2}%')
+           </if>
+	  GROUP BY occurredAt desc
+    </select>
+    
+</mapper>

@@ -1,0 +1,357 @@
+@charset "utf-8";
+
+.grid-cell-fail {
+	background: #f8d2cb;
+}
+
+.chkHiddenLabel {
+	display: none;
+}
+
+.gray-font{
+	
+	color : #cccccc;
+}
+
+.BigNumber__container--clickable{
+	cursor : pointer;
+}
+
+.BigNumber__label{
+	font-size:.833em; color:#707173; text-transform: uppercase; letter-spacing:.07em;
+}
+
+.StatusCircleYellow{
+	width: 12px; height:12px; background-color:#f2a200; display:inline-block; border-radius:100%;
+}
+
+.StatusCircleRed{
+	width: 12px; height:12px; background-color:#e64d2e; display:inline-block; border-radius:100%;
+}
+
+.StatusCircleGrey{
+	width: 12px; height:12px; background-color:#e5e5e5; display:inline-block; border-radius:100%;
+}
+
+.StatusCircleGreen{
+	width: 12px; height:12px; background-color:#67b346; display:inline-block; border-radius:100%;
+}
+
+.StatusCircleGreenDonut{
+	width: 12px; height:12px; background-color:transparent; border:2px solid #67b346; display:inline-block; border-radius:100%;
+}
+
+.nameEtc {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+
+.NodeName .nodeTitle {
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+.BigNumber__value{
+	font-size:2.896em; line-height:1.23; font-weight:200;
+}
+
+.BigNumber__trend .BigNumber__negativeTrend{
+	color:#e64d2e;
+}
+.BigNumber__trend .BigNumber__positiveTrend{
+	color:#67b346;	
+}
+.BigNumber__trend .BigNumber__trendRange{
+	color:#828285;
+}
+
+.btn-group, .btn-group-vertical {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn-group .btn.active {
+    color: #fff;
+    background-color: #a2a3a6;
+}
+
+.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.btn-group > .btn:first-child {
+    margin-left: 0;
+}
+
+.btn.btn-default {
+    color: #222325;
+    background-color: #FAFAFA;
+    border-color: #C5C5C7;
+}
+
+a.btn {
+    text-decoration: none;
+}
+a.btn {
+    color: #222325;
+    background-color: #FAFAFA;
+    border-color: #C5C5C7;
+}
+.btn {
+}
+.btn-default {
+    color: #222325;
+    background-color: #FAFAFA;
+    border-color: #C5C5C7;
+}
+.btn {
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 4px 10px;
+    font-size: 13px;
+    line-height: 1.42857;
+    border-radius: 2px;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.HistoricalWirelessHealthStats {
+    display: -ms-flexbox;
+    display: flex;
+    margin-top: 1em;
+    font-size: 1.7rem;
+}
+
+.HistoricalWirelessHealthStats .HealthSummary {
+    padding: 0 1em;
+    transition: box-shadow .1s ease;
+}
+
+.HistoricalWirelessHealthStats .PerformanceSummary {
+    cursor: pointer;
+}
+
+.PerformanceSummary {
+    border: 1px solid #ddd;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.HistoricalWirelessHealthStats .ConnectionsSummary {
+    margin-right: 2em;
+    cursor: pointer;
+}
+
+.ConnectionsSummary {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    border: 1px solid #ddd;
+}
+
+.ConnectionsSummaryPieChart__noData {
+    -ms-flex-align: center;
+    align-items: center;
+    display: -ms-flexbox;
+    display: flex;
+    height: 170px;
+    width: 170px;
+}
+
+.ConnectionsSummaryPieChart__noData span {
+    padding: .5rem;
+    text-align: center;
+    color: #69696b;
+    margin-right: .5em;
+}
+
+.ConnectionsSummary .ConnectionSteps {
+    border-left: 1px solid #ddd;
+    margin: 2em;
+}
+
+.ConnectionSteps .MkiSimpleDropoffChart {
+    padding: 1em;
+    margin-left: 2em;
+}
+
+.MkiSimpleDropoffChart__header {
+    text-align: center;
+    color: #666;
+}
+
+.MkiSimpleDropoffChart__content {
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.MkiSimpleDropoffChart__content div {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-pack: space-evenly;
+    justify-content: space-evenly;
+}
+
+.MkiSimpleDropoffChart__content .MkiSimpleDropoffChart__statuses {
+    margin: 1.5em;
+}
+
+.MkiSimpleDropoffChart__content div {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-pack: space-evenly;
+    justify-content: space-evenly;
+}
+
+.MkiSimpleDropoffChart__content div {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-pack: space-evenly;
+    justify-content: space-evenly;
+}
+
+.ConnectionSteps .MkiSimpleDropoffChart .MkiSimpleDropoffChart__content .MkiSimpleDropoffChart__statuses .StatusCircles .statusGood {
+    background-color: #67b346;
+}
+
+.StatusCircle.statusGood {
+    background-color: #67b346;
+}
+
+/*  .StaticMapOverlay {
+    position: absolute;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+} */
+
+.BigNumberSet--compact {
+    padding: 1em 1.5em;
+}
+
+.BigNumberSet {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 1.25em 2em;
+    border: 1px solid #d7d7d9;
+}
+
+.BigNumberSet .BigNumber:not(:last-child) {
+    margin-right: 1em;
+}
+
+.BigNumber {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+
+.RadiusAndVlanSummaryLiveSection .BigNumber__container {
+    margin-top: 4px;
+}
+
+.BigNumber__container {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-align: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.RadiusAndVlanSummaryLiveSection .BigNumber__statusIcon {
+    margin-right: .4em;
+}
+
+.BigNumber--compact .BigNumber__statusIcon .StatusCircle {
+    width: 9px;
+    height: 9px;
+}
+
+.BigNumber__statusIcon .StatusCircle {
+    width: 12px;
+    height: 12px;
+}
+.StatusCircle.statusGood {
+    background-color: #67b346;
+}
+.StatusCircle {
+    display: inline-block;
+    height: 8px;
+    width: 8px;
+    border-radius: 100%;
+}
+
+.BigNumber__valueWrapper {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: baseline;
+    align-items: baseline;
+    transition: border-bottom .1s;
+}
+
+.BigNumberValueOverTotal__Total {
+    font-size: .75em;
+}
+
+.StatusCircle.statusGood {
+    background-color: #67b346;
+}
+
+.StatusCircle.statusAlerting {  
+    background-color: #f2a200;
+}
+
+.StatusCircle.statusBad {
+    background-color: #e64d2e;
+}
+
+.StatusCircle {
+    display: inline-block;
+    height: 8px;
+    width: 8px;
+    border-radius: 100%;
+}
+
